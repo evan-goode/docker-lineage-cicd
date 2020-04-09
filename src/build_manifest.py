@@ -19,10 +19,7 @@ from xml.dom import minidom
 import xml.etree.ElementTree as ET
 import argparse
 
-try:
-    from urllib.request import urlopen
-except ImportError:
-    from urllib2 import urlopen
+from urllib2 import urlopen, Request
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Build an Android repo manifest')
@@ -33,7 +30,11 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
 
-    source_manifest = urlopen(args.url).read()
+    headers = {
+        "User-Agent": "Mozilla/5.0 (X11; Linux x86_64; rv:74.0) Gecko/20100101 Firefox/74.0",
+    }
+    request = Request(args.url, headers=headers)
+    source_manifest = urlopen(request).read()
 
     xmlin = ET.fromstring(source_manifest)
     xmlout = ET.Element("manifest")
